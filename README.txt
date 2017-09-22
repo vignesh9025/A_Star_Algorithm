@@ -1,0 +1,1 @@
+This repository contains a functional implementation of the A* algorithm. A* is an uninformed search algorithm used extensively in the field of AI. This implementation here is done with Python.
