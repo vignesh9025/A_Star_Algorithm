@@ -9,7 +9,7 @@ successors2 = { 'a': ['b','c','d'],
 
 successors = { 'a': ['b','c','d'],
 			   'b': ['e','f'],
-			   'c': ['g','h','a','z'],
+			   'c': ['g','h','a'],
 			   'd': ['i'],
 			   'f': ['b', 'j'],
 			   'j': ['z'],
@@ -39,6 +39,7 @@ class Node:
 # Define hf (for testing)
 def hf(state):
 	h = 0
+	return h
 	if state == 'd':
 		h = 2
 	if state == 'c':
@@ -75,11 +76,13 @@ def astar(startState, goalState, successorsf):
 	# Then we begin iterating through *unExpanded* while it's not empty. This is done with a while loop.
 
 	while(unExpanded):
+		#print("unExpanded (before): ", unExpanded)
 		statePair = unExpanded.pop()
+		#print("unExpanded (after): ", unExpanded)
 		# Add to expanded
 		expanded[statePair[0]] = statePair[1]
 		state = statePair[0]
-
+		print("State: ", state)
 		# Obtain children of state
 
 		children = successorsf(state.state)
@@ -115,12 +118,14 @@ def astar(startState, goalState, successorsf):
 			childNodes.append(childNode)
 
 		# Sort child nodes in descending order of f values.
-		childNodes.sort()
+		#childNodes.sort()
 
 		# Append child nodes in unExpanded
 		for c in childNodes:
 			unExpanded.append((c, state))
 
+		# Sort unExpanded in descending order
+		unExpanded.sort(key = lambda x: -x[0].f)
 	return "NO goal"
 
 
