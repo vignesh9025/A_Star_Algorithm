@@ -1,6 +1,6 @@
 # 1 + b + b^2 + ... + b^d
 
-def ebf(nNodes, depth, precision = 0.01):
+def ebf(nNodes, depth, precision = 0.000001):
 	left = 1
 	right = nNodes
 	if nNodes == 0:
@@ -22,5 +22,5 @@ def ebf(nNodes, depth, precision = 0.01):
 			return b
 	return b
 
-print(ebf(100, 12))
+print(ebf(2, 1))
 
