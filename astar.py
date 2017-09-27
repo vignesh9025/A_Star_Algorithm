@@ -167,20 +167,63 @@ def aStarSearchHelper(parentNode, actionsF, takeActionF, goalTestF, hF, fmax):
             result.insert(0,parentNode.state)     
             return (result, bestChild.f)
 
-# Heuristic function definition
+# H1 - Heuristic function definition
 def hf(state):
 	return 0
 
+# H2 - Heuristic function which computes the Manhattan distance of the blank
+def hf2(state, goalState):
+	x1, y1 = findBlank_8p(state)
+	x2, y2 = findBlank_8p(goalState)
+	x = abs(x1 - x2)
+	y = abs(y1 - y2)
+	return x + y
 
-startState = [1,2,3,4,0,5,6,7,8]
+# H3 - Actual Manhattan distance
+def hf3(state, goalState):
+	dist = 0
+	for i in range(9):
+		if state[i] == 0:
+			continue
+		# Find element at position i in state
+		element = state[i]
+		# Find x and y of this element
+		x1, y1 = list_to_matrix_8p(i)
+		# Index of same element in goalState
+		xg, yg = list_to_matrix_8p(goalState.index(element))
+		# Compute sum
+		x = abs(x1 - xg)
+		y = abs(y1 - yg)
+		#print(x, y)
+		s = x + y
+		#print(s)
+		dist = s + dist
+	return dist
 
+startState = [6,4,7,8,5,0,3,2,1]
+goalState = [1,2,3,4,5,6,7,8,0]
+
+#startState = [2,1,3,5,4,0,6,7,8]
+#goalState = [1,2,3,4,5,6,7,8,0]
+
+#startState = [1,2,3,4,0,5,6,7,8]
+#goalState = [3,5,0,2,1,8,4,7,6]
+#startState = [1,2,3,4,5,0,6,7,8]
+#goalState = [0,2,3,4,5,1,6,7,8]
 def goalTestF(state):
-	goalState = [3,5,0,2,1,8,4,7,6]
+	#goalState = [1,2,3,4,5,8,6,0,7]
+	#goalState = [1,2,3,4,0,5,6,7,8]
+	goalState = [1,0,3,4,5,8,2,6,7]
 	return state == goalState
 
-print(aStarSearch(startState, actionsF_8p, takeActionF_8p, goalTestF, hf))
+#def runExperiment(goalState1, goalState2, goalState3, [h1, h2, h3]):
+
+
+#print(aStarSearch(startState, actionsF_8p, takeActionF_8p, goalTestF, lambda s: hf2(s, [1,0,3,4,5,8,2,6,7])))
+#print(aStarSearch(startState, actionsF_8p, takeActionF_8p, goalTestF, hf))
 #print(actionsF_8p(startState))
 #print(takeActionF_8p([1, 2, 3, 4, 5, 6, 7, 0, 8], ('up', 1)))
+print(hf3(startState, goalState))
 
 
 
