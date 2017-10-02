@@ -5,7 +5,7 @@ def ebf(nNodes, depth, precision = 0.000001):
 	right = nNodes
 	if nNodes == 0:
 		return 0
-	b = 1
+	b = 1.0
 	while(True):
 		if abs(right - left) <= precision:
 			break
@@ -22,5 +22,5 @@ def ebf(nNodes, depth, precision = 0.000001):
 			return b
 	return b
 
-print(ebf(2, 1))
+print(ebf(1, 0))
 

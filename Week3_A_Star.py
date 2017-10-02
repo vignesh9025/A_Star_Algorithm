@@ -126,7 +126,7 @@ def astar(startState, goalState, successorsf):
 
 		# Sort unExpanded in descending order
 		unExpanded.sort(key = lambda x: -x[0].f)
-	return "NO goal"
+	return "No goal"
 
 
 if __name__ == '__main__':

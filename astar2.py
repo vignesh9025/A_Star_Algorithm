@@ -73,7 +73,6 @@ def iterativeDeepeningSearch(startState, goalState, actionsF, takeActionF, maxDe
     # ITERATING THROUGH DEPTH VALUES
     for depth in range(maxDepth):
         # CALLING depthLimitedSearch FOR EACH DEPTH VALUE
-        print("We're at depth: ", depth)
         result = depthLimitedSearch(startState, goalState, actionsF, takeActionF, depth)
         if result == 'failure':
             return 'failure'
@@ -314,52 +313,71 @@ import numpy as np
 from tabulate import tabulate
 
 
-mas = []
-def runExperiment(goalState1, goalState2, goalState3):
+import pandas as pd
+import numpy as np
+from IPython.display import display, HTML
+
+from IPython.display import display_html
+def disp(dataframes):
+    html_str=''
+    for i in dataframes:
+        html_str = html_str + i
+    display_html(html_str.replace('table','table style="display:inline; text-align:center"'),raw=True)
+
+def runExperiment(goalState1, goalState2, goalState3, hList = []):
+    global nodes
+    row1 = ['']
+    row2 = ['Algorithm']
+    row3 = ['IDS']
+    rowi = []
+    # Iterate through list of heuristic functions and append name first.
+    for h in range(len(hList)):
+        rowi.append(['A*h' + str(h)])
+
+    mas = []
+    final = [row1, row2, row3]#, row4, row5, row6]
+    for r in rowi:
+        final.append(r)
+    t = tabulate(final, stralign = 'center', tablefmt = 'simple')
+
+    mas.append(t)
+    for r in rowi:
+        r.clear()
     startState = [1,2,3,4,0,5,6,7,8]
     goalStateList = [goalState1, goalState2, goalState3]
     for goalState in goalStateList:
         row1 = ['', goalState, '']
         row2 = ['Depth', 'Nodes', 'EBF']
         row3 = []
-        row4 = []
-        row5 = []
-        row6 = []
         ids = iterativeDeepeningSearch(startState, goalState, actionsF_8p, takeActionF_8p, 20)
-        dids = len(ids)
+        dids = len(ids) - 1
         n = nodes
         ebfids = ebf(n, dids)
+        ebfids = "{:.3f}".format(ebfids) 
         row3.append(dids)
         row3.append(n)
         row3.append(ebfids)
+        nodes = 0
 
-        ah1 = aStarSearch(startState, actionsF_8p, takeActionF_8p, lambda s: goalTestF_8p(s, goalState), lambda s: hf(s, goalState))
-        d1 = len(ah1)
-        n1 = nodes
-        ebf1 = ebf(n1, d1)
-        row4.append(d1)
-        row4.append(n1)
-        row4.append(ebf1)
+        for i in range(len(hList)):
+            hf = hList[i]
+            ah = aStarSearch(startState, actionsF_8p, takeActionF_8p, lambda s: goalTestF_8p(s, goalState), lambda s: hf(s, goalState))
+            d = ah[1]
+            n = nodes
+            ebf1 = ebf(n, d)
+            ebf1 = "{:.3f}".format(ebf1)
+            rowi[i].append(d)
+            rowi[i].append(n)
+            rowi[i].append(ebf1)
+            nodes = 0
 
-        ah2 = aStarSearch(startState, actionsF_8p, takeActionF_8p, lambda s: goalTestF_8p(s, goalState), lambda s: hf2(s, goalState))
-        d2 = len(ah2)
-        n2 = nodes
-        ebf2 = ebf(n2, d2)
-        row5.append(d2)
-        row5.append(n2)
-        row5.append(ebf2)
-
-
-        ah3 = aStarSearch(startState, actionsF_8p, takeActionF_8p, lambda s: goalTestF_8p(s, goalState), lambda s: hf3(s, goalState))
-        d3 = len(ah3)
-        n3 = nodes
-        ebf3 = ebf(n3, d3)
-        row6.append(d3)
-        row6.append(n3)
-        row6.append(ebf3)
-
-        final = [row1, row2, row3, row4, row5, row6]
+        final = [row1, row2, row3]
+        for row in rowi:
+            final.append(row)
+        print(final)
         t = tabulate(final, stralign = 'center')
+        for row in rowi:
+            row.clear()
         mas.append(t)
     for i in mas:
         print(i)
@@ -370,23 +388,55 @@ def goalTestF_8p(state, goalState):
 
 goalState1 = [1,2,3,4,0,5,6,7,8]
 goalState2 = [1,2,3,4,5,8,6,0,7]
-goalState3 = [1,0,3,4,5,8,2,6,7]
-#goalState3 = [1,2,3,4,0,5,6,7,8]
+#goalState3 = [1,0,3,4,5,8,2,6,7]
+goalState3 = [1,2,3,4,0,5,6,7,8]
 startState = [1,2,3,4,0,5,6,7,8]
 goalState = [1, 2, 3, 4, 5, 8, 6, 0, 7]
 
-#runExperiment(goalState1, goalState2, goalState3)
+#runExperiment(goalState1, goalState2, goalState3, [hf, hf2, hf3])
 #print(aStarSearch(startState, actionsF_8p, takeActionF_8p, lambda s: goalTestF_8p(s, goalState1), lambda s: hf(s, goalState1)))
 #print(iterativeDeepeningSearch(startState, goalState, actionsF_8p, takeActionF_8p, 20))
 #print(nodes)
 #nodes = 0
-a = aStarSearch(startState, actionsF_8p, takeActionF_8p, lambda s: goalTestF_8p(s, goalState3), lambda s: hf2(s, goalState3))
-print(a)
-print(nodes)
-print(a[1])
+#a = aStarSearch(startState, actionsF_8p, takeActionF_8p, lambda s: goalTestF_8p(s, goalState3), lambda s: hf2(s, goalState3))
+#print(a)
+#print(nodes)
+#print(a[1])
+print(ebf(1, 0, 0.01))
 
 
+'''
+        ah1 = aStarSearch(startState, actionsF_8p, takeActionF_8p, lambda s: goalTestF_8p(s, goalState), lambda s: hf(s, goalState))
+        d1 = ah1[1]
+        n1 = nodes
+        ebf1 = ebf(n1, d1)
+        ebf1 = "{:.3f}".format(ebf1)
+        row4.append(d1)
+        row4.append(n1)
+        row4.append(ebf1)
+        nodes = 0
+        
+        ah2 = aStarSearch(startState, actionsF_8p, takeActionF_8p, lambda s: goalTestF_8p(s, goalState), lambda s: hf2(s, goalState))
+        d2 = ah2[1]
+        n2 = nodes
+        ebf2 = ebf(n2, d2)
+        ebf2 = "{:.3f}".format(ebf2)
+        row5.append(d2)
+        row5.append(n2)
+        row5.append(ebf2)
+        nodes = 0
 
+
+        ah3 = aStarSearch(startState, actionsF_8p, takeActionF_8p, lambda s: goalTestF_8p(s, goalState), lambda s: hf3(s, goalState))
+        d3 = ah3[1]
+        n3 = nodes
+        ebf3 = ebf(n3, d3)
+        ebf3 = "{:.3f}".format(ebf3)
+        row6.append(d3)
+        row6.append(n3)
+        row6.append(ebf3)
+        nodes = 0
+        '''
 
 
 
